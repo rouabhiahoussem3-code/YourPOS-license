@@ -1,4 +1,4 @@
 {
-  "payload": "{\"v\":1,\"seq\":1791051327,\"issued\":\"2026-10-03\",\"revoked\":[\"0129a18abf2f0f55ca3e9d0e\",\"73b55f9acc7e4d6858dd9e85\",\"804d7f9ae5003eb46c97a6fc\",\"9edff994c633cfe26ed158fa\"]}",
-  "signature": "RYIpN6wE2OS74lBYKCdmhDR3d9gNjbFegm6OAd68U6ogcaVZvBX5BrWn5mtMkTldtQDYd2KZvG3ozT6MqCvlAw=="
+  "payload": "{\"v\":1,\"seq\":1791109671,\"issued\":\"2026-10-04\",\"revoked\":[\"73b55f9acc7e4d6858dd9e85\",\"804d7f9ae5003eb46c97a6fc\",\"9edff994c633cfe26ed158fa\"]}",
+  "signature": "ekoTzLtuJ1S7PALkjtzwHT0OBJnh7r4bO/Ns1ZpuzvvFT3eQWDht+21ysYubRxtuA8MFBPnpOkavaVmA3tDWDw=="
 }
