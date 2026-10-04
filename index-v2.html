@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Your POS | الكارني يضيع، البرنامج يتذكّر</title>
+<meta name="description" content="برنامج كاسة لمحلات الجزائر: البيع بالباركود والتيكي، المخزون، الكريدي وتقرير اليوم. بدون إنترنت، 9 900 DA مرة واحدة بدون اشتراك. جرّبه 14 يومًا مجانًا.">
+<meta property="og:title" content="Your POS | الكارني يضيع، البرنامج يتذكّر">
+<meta property="og:description" content="برنامج كاسة لمحلات الجزائر: البيع بالباركود والتيكي، المخزون، الكريدي وتقرير اليوم. بدون إنترنت، 9 900 DA مرة واحدة بدون اشتراك. جرّبه 14 يومًا مجانًا.">
+<meta property="og:type" content="website">
+<style>body{margin:0}img{max-width:100%}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@600;700;800&family=Readex+Pro:wght@400;500;600&family=Aref+Ruqaa:wght@400;700&display=swap">
+<style>
+  /* Layout: the shop's old notebook against the screen that replaces it — a lined page in the hero with the
+     program's debt list laid over it, then a shop day told by the clock, then the notebook and the program side by side. */
+  :root {
+    --bg: #f5f6fa;
+    --surface: #ffffff;
+    --ink: #17213a;
+    --muted: #5b6479;
+    --line: #dfe2ec;
+    --accent: #e8733d;
+    --accent-soft: #fdeee6;
+    --brand: #0881a3;
+    --on-ink: #ffffff;
+    --danger: #c43d3d;
+    --paper: #fbf8ef;
+    --paper-rule: #c9d6ea;
+    --paper-margin: #e28383;
+    --pen: #22408f;
+    --shadow: 0 22px 48px -24px rgba(23, 33, 58, 0.45);
+    --font-display: "Noto Kufi Arabic", "Readex Pro", "Segoe UI", Tahoma, sans-serif;
+    --font-body: "Readex Pro", "Segoe UI", Tahoma, sans-serif;
+    --font-hand: "Aref Ruqaa", "Traditional Arabic", serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1526; --surface: #161e33; --ink: #e8ebf4; --muted: #9aa3ba; --line: #27314b;
+      --accent: #f7935f; --accent-soft: #3a2519; --brand: #4db8d8; --on-ink: #0f1526; --danger: #ef7b7b;
+      --shadow: 0 22px 48px -24px rgba(0, 0, 0, 0.8);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1526; --surface: #161e33; --ink: #e8ebf4; --muted: #9aa3ba; --line: #27314b;
+    --accent: #f7935f; --accent-soft: #3a2519; --brand: #4db8d8; --on-ink: #0f1526; --danger: #ef7b7b;
+    --shadow: 0 22px 48px -24px rgba(0, 0, 0, 0.8);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.8; }
+  a { color: var(--brand); }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  h1, h2, h3 { font-family: var(--font-display); line-height: 1.35; margin: 0; text-wrap: balance; }
+  p { margin: 0; }
+  .wrap { max-width: 1100px; margin-inline: auto; padding-inline: 20px; }
+  .ltr { direction: ltr; unicode-bidi: isolate; font-variant-numeric: tabular-nums; }
+
+  .btn { display: inline-flex; align-items: center; gap: 9px; padding: 13px 22px; border-radius: 12px; font: 600 16px var(--font-body); text-decoration: none; border: 1.5px solid transparent; }
+  .btn-main { background: var(--ink); color: var(--on-ink); }
+  .btn-main:hover { background: var(--accent); color: #fff; }
+  .btn-line { border-color: var(--ink); color: var(--ink); }
+  .btn-line:hover { border-color: var(--accent); color: var(--accent); }
+  .btn svg { width: 19px; height: 19px; fill: currentColor; flex: none; }
+
+  /* Header */
+  .top { padding-block: 18px; }
+  .top .wrap { display: flex; align-items: center; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+  .logo img { width: 36px; height: 36px; border-radius: 9px; background: #fff; padding: 3px; }
+  .logo b { font: 800 20px var(--font-body); direction: ltr; }
+  .logo b span { color: var(--accent); }
+  .top .phone { margin-inline-start: auto; font-size: 15px; color: var(--muted); }
+  .top .phone b { color: var(--ink); user-select: all; }
+
+  /* Hero */
+  .hero .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; padding-block: 40px 80px; }
+  .kicker { font-size: 15px; font-weight: 600; color: var(--accent); }
+  .hero h1 { font-size: clamp(36px, 5.2vw, 58px); font-weight: 800; margin-top: 8px; }
+  .hero h1 span { display: block; color: var(--accent); }
+  .hero .lead { font-size: 19px; color: var(--muted); margin-top: 20px; max-width: 32em; }
+  .hero .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  .hero .small { margin-top: 16px; font-size: 14.5px; color: var(--muted); }
+
+  .stage { position: relative; padding-block-end: 70px; }
+  .notebook { position: relative; background: var(--paper); border-radius: 4px 14px 14px 4px; padding: 30px 64px 34px 28px; box-shadow: var(--shadow); transform: rotate(2deg);
+    background-image: repeating-linear-gradient(to bottom, transparent 0 39px, var(--paper-rule) 39px 40px); background-position: 0 22px; }
+  .notebook::before { content: ""; position: absolute; top: 0; bottom: 0; inset-inline-start: 46px; width: 2px; background: var(--paper-margin); }
+  .notebook .date { font-family: var(--font-hand); color: var(--pen); font-size: 18px; line-height: 40px; }
+  .notebook ul { list-style: none; margin: 0; padding: 0; }
+  .notebook li { font-family: var(--font-hand); color: var(--pen); font-size: 26px; line-height: 40px; display: flex; justify-content: space-between; gap: 18px; }
+  .notebook li.gone { text-decoration: line-through; text-decoration-thickness: 2px; opacity: 0.55; }
+  .notebook li .ltr { font-family: var(--font-hand); }
+  .notebook .stain { position: absolute; width: 90px; height: 90px; border-radius: 50%; border: 7px solid rgba(140, 90, 40, 0.14); inset-inline-end: 24px; bottom: 26px; }
+
+  .screen { position: absolute; inset-inline-end: -12px; bottom: 0; width: 76%; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); padding: 16px 18px; font-size: 14px; line-height: 1.55; }
+  .screen .bar { display: flex; justify-content: space-between; align-items: baseline; font-weight: 600; margin-bottom: 8px; }
+  .screen .bar small { color: var(--muted); font-weight: 400; }
+  .debt { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 8px 0; border-top: 1px solid var(--line); }
+  .debt b { font-weight: 600; }
+  .debt .amt { font-weight: 600; }
+  .debt small { color: var(--muted); font-size: 12.5px; }
+  .debt small.late { color: var(--danger); }
+  .debt .wa { font-size: 12.5px; color: var(--brand); font-weight: 600; text-align: end; }
+
+  /* Sections */
+  section { padding-block: 84px; }
+  .band { background: var(--surface); border-block: 1px solid var(--line); }
+  .head { max-width: 38em; margin-bottom: 44px; }
+  .head h2 { font-size: clamp(28px, 3.6vw, 40px); font-weight: 800; }
+  .head p { color: var(--muted); margin-top: 10px; font-size: 18px; }
+
+  /* A shop day, by the clock */
+  .day { list-style: none; margin: 0; padding: 0; position: relative; max-width: 820px; }
+  .day::before { content: ""; position: absolute; top: 10px; bottom: 10px; inset-inline-start: 86px; width: 2px; background: var(--line); }
+  .day li { display: grid; grid-template-columns: 70px 1fr; gap: 40px; padding-block: 18px; position: relative; }
+  .day li::after { content: ""; position: absolute; top: 30px; inset-inline-start: 80px; width: 14px; height: 14px; border-radius: 50%; background: var(--surface); border: 3px solid var(--accent); }
+  .day time { font: 600 20px var(--font-body); color: var(--accent); padding-top: 4px; }
+  .day h3 { font-size: 21px; font-weight: 700; }
+  .day p { color: var(--muted); margin-top: 6px; max-width: 36em; }
+
+  /* The notebook and the program, side by side */
+  .compare { width: 100%; border-collapse: collapse; background: var(--bg); border-radius: 14px; overflow: hidden; }
+  .compare-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+  .compare th, .compare td { text-align: start; padding: 16px 20px; vertical-align: top; border-bottom: 1px solid var(--line); }
+  .compare tr:last-child td { border-bottom: 0; }
+  .compare thead th { font: 700 16px var(--font-display); background: var(--surface); }
+  .compare thead th.us { color: var(--accent); }
+  .compare td:first-child { font-weight: 600; width: 18%; white-space: nowrap; }
+  .compare td.old { color: var(--muted); font-family: var(--font-hand); font-size: 21px; line-height: 1.5; }
+  .compare td.new { width: 44%; }
+
+  .shops { display: flex; flex-wrap: wrap; gap: 10px; }
+  .shops span { border: 1.5px solid var(--line); border-radius: 999px; padding: 8px 18px; font-weight: 500; background: var(--surface); }
+
+  .head h2 .price { color: var(--accent); white-space: nowrap; direction: ltr; unicode-bidi: isolate; }
+  .offer { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border: 1.5px solid var(--ink); border-radius: 16px; overflow: hidden; }
+  .offer div { padding: 28px 26px; }
+  .offer div + div { border-inline-start: 1.5px solid var(--ink); }
+  .offer div:nth-child(odd) { border-inline-start: 0; }
+  .offer div:nth-child(n+3) { border-top: 1.5px solid var(--ink); }
+  .offer h3 { font-size: 22px; font-weight: 800; }
+  .offer p { color: var(--muted); margin-top: 8px; font-size: 16px; }
+  .trial { margin-top: 24px; background: var(--accent-soft); border-radius: 14px; padding: 22px 26px; display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; }
+  .trial p { flex: 1 1 320px; }
+  .trial b { color: var(--ink); }
+
+  .faq { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 48px; }
+  .faq h3 { font-size: 18px; font-weight: 700; }
+  .faq p { color: var(--muted); margin-top: 6px; font-size: 16px; }
+
+  .final { background: var(--ink); color: var(--on-ink); border-radius: 22px; padding: 56px 44px; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center; }
+  .final h2 { font-size: clamp(28px, 3.6vw, 40px); font-weight: 800; }
+  .final p { margin-top: 10px; opacity: 0.85; }
+  .final .btn-main { background: var(--accent); color: #fff; margin-top: 26px; }
+  .final .btn-main:hover { filter: brightness(1.08); }
+  .final dl { margin: 0; display: grid; gap: 16px; }
+  .final dt { font-size: 13px; opacity: 0.7; }
+  .final dd { margin: 0; font-weight: 600; font-size: 19px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .final dd .v { user-select: all; }
+  .final dd a { color: inherit; }
+  .copy { background: transparent; color: inherit; border: 1px solid currentColor; opacity: 0.8; border-radius: 8px; padding: 2px 10px; font: 500 13px var(--font-body); cursor: pointer; }
+
+  footer { padding-block: 32px 44px; color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; }
+
+  @media (max-width: 920px) {
+    .hero .wrap { grid-template-columns: 1fr; gap: 40px; padding-block: 20px 64px; }
+    .stage { max-width: 520px; }
+    .offer, .faq { grid-template-columns: 1fr; }
+    .offer div + div { border-inline-start: 0; border-top: 1.5px solid var(--ink); }
+    .final { grid-template-columns: 1fr; padding: 36px 24px; }
+    .top .phone { display: none; }
+  }
+  @media (max-width: 560px) {
+    body { font-size: 16px; }
+    section { padding-block: 60px; }
+    .notebook { transform: none; padding-inline-end: 54px; }
+    .notebook li { font-size: 22px; }
+    .screen { position: relative; width: 92%; margin-top: -40px; inset-inline-end: auto; margin-inline-start: auto; }
+    .stage { padding-block-end: 0; }
+    .day::before { inset-inline-start: 62px; }
+    .day li { grid-template-columns: 50px 1fr; gap: 30px; }
+    .day li::after { inset-inline-start: 56px; }
+    .day time { font-size: 16px; }
+    .compare td:first-child { white-space: normal; }
+  }
+
+  /* Trial request form: saved to the owner's Google Sheet, then offered to WhatsApp */
+  .req { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 48px; align-items: start; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 20px; padding: 40px; }
+  .req-intro h2 { font-size: clamp(28px, 3.5vw, 38px); font-weight: 800; }
+  .req-intro p { color: var(--muted); margin-top: 10px; }
+  .req-points { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 8px; }
+  .req-points li { display: flex; gap: 10px; align-items: center; }
+  .req-points li::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--r-accent); flex: none; }
+  .req-form, .req-done { display: grid; gap: 14px; align-content: start; min-width: 0; }
+  .req-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .req-row { display: grid; gap: 6px; min-width: 0; }
+  .req-row label { font-size: 14.5px; font-weight: 600; }
+  .req-row label small { color: var(--muted); font-weight: 400; }
+  .req-row input, .req-row select { width: 100%; font: inherit; font-size: 16px; line-height: 1.4; padding: 12px 14px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); }
+  .req-row input:focus, .req-row select:focus { outline: none; border-color: var(--r-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--r-accent) 25%, transparent); }
+  .req-row input[aria-invalid="true"] { border-color: var(--r-error); }
+  .req-form { position: relative; }
+  .req-hp { position: absolute; top: 0; inset-inline-start: 0; width: 1px; height: 1px; opacity: 0; overflow: hidden; clip-path: inset(50%); pointer-events: none; }
+  .req-error { color: var(--r-error); font-size: 14.5px; font-weight: 600; min-height: 1.4em; }
+  .req-send { display: inline-flex; justify-content: center; align-items: center; gap: 8px; width: 100%; padding: 14px 20px; border: 0; border-radius: 12px; background: var(--r-accent); color: var(--r-on); font: inherit; font-weight: 700; font-size: 17px; cursor: pointer; text-decoration: none; }
+  .req-send:hover { filter: brightness(1.07); }
+  .req-send[disabled] { opacity: 0.6; cursor: default; }
+  .req-send svg { width: 20px; height: 20px; fill: currentColor; flex: none; }
+  .req-privacy { color: var(--muted); font-size: 13.5px; }
+  .req-done h3 { font-size: 24px; font-weight: 800; }
+  .req-done p { color: var(--muted); }
+  .req-again { background: none; border: 0; padding: 0; color: var(--muted); font: inherit; font-size: 15px; cursor: pointer; text-decoration: underline; justify-self: start; }
+  @media (max-width: 860px) { .req { grid-template-columns: 1fr; padding: 28px 20px; gap: 28px; } }
+  @media (max-width: 480px) { .req-2 { grid-template-columns: 1fr; } }
+  .request, .req { --r-accent: var(--accent); --r-on: #ffffff; }
+  :root { --r-error: #d04444; }
+
+  /* The form at the top of the page, under the headline */
+  .req.req-hero { display: grid; grid-template-columns: 1fr; gap: 12px; padding: 24px; border-radius: 16px; margin-top: 28px; max-width: 580px; box-shadow: 0 24px 48px -30px rgba(0, 0, 0, 0.5); }
+  .req-hero .req-title { font-size: 21px; font-weight: 800; }
+  .req-hero .req-sub { color: var(--muted); font-size: 15px; margin-top: -6px; }
+  .req-hero .req-form, .req-hero .req-done { gap: 12px; }
+  .req-hero .dl-facts[hidden] { display: none; }
+  .req-hero .req-row input, .req-hero .req-row select { padding: 10px 12px; }
+  @media (max-width: 860px) { .req.req-hero { padding: 20px 16px; } }
+
+  /* Two choices at the top: order the paid version, or download the trial */
+  .choice { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: var(--bg); padding: 6px; border-radius: 14px; border: 1px solid var(--line); }
+  .choice button { display: grid; gap: 2px; text-align: start; padding: 10px 14px; border-radius: 10px; border: 0; background: transparent; color: var(--ink); font: inherit; line-height: 1.4; cursor: pointer; }
+  .choice button b { font-size: 16px; font-weight: 800; }
+  .choice button small { color: var(--muted); font-size: 13px; }
+  .choice button[aria-pressed="true"] { background: var(--surface); box-shadow: inset 0 0 0 2px var(--r-accent), 0 8px 16px -10px rgba(0, 0, 0, 0.35); }
+  .dl-facts { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 15px; }
+  .dl-facts li { display: flex; gap: 10px; align-items: center; }
+  .dl-facts li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--r-accent); flex: none; }
+  @media (max-width: 420px) { .choice button { padding: 9px 10px; } .choice button b { font-size: 15px; } }
+
+  /* Details first, then one of two buttons */
+  .req-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .req-actions .req-send { flex-direction: column; gap: 1px; padding: 12px 14px; line-height: 1.35; }
+  .req-actions .req-send small { font-size: 13px; font-weight: 500; opacity: 0.85; }
+  .req-send.req-alt { background: var(--ink); color: var(--bg); }
+  bdi { white-space: nowrap; }
+  @media (max-width: 480px) { .req-actions { grid-template-columns: 1fr; } }
+
+  /* Everything in the program, by group */
+  .catalog .cat-head { max-width: 40em; margin-bottom: 40px; }
+  .catalog .cat-head h2 { font-size: clamp(28px, 3.6vw, 42px); font-weight: 800; }
+  .catalog .cat-head p { color: var(--muted); margin-top: 10px; font-size: 18px; }
+  .cat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; align-items: start; }
+  .cat-group { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px 22px 14px; }
+  .cat-group h3 { font-size: 19px; font-weight: 800; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding-bottom: 12px; border-bottom: 2px solid var(--c-accent); }
+  .cat-group h3 small { font-size: 13px; font-weight: 600; color: var(--c-accent); }
+  .cat-group ul { list-style: none; margin: 0; padding: 0; }
+  .cat-group li { padding: 10px 0; border-bottom: 1px solid var(--line); line-height: 1.5; }
+  .cat-group li:last-child { border-bottom: 0; }
+  .cat-group li b { display: block; font-weight: 700; font-size: 16px; }
+  .cat-group li span { display: block; color: var(--muted); font-size: 14px; margin-top: 2px; }
+  @media (max-width: 980px) { .cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 600px) { .cat-grid { grid-template-columns: 1fr; } .cat-group { padding: 18px 16px 10px; } }
+  .catalog { --c-accent: var(--accent); }
+</style>
+
+</head>
+<body>
+<div dir="rtl" lang="ar">
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Your POS"><img src="data:image/png;base64,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" alt=""><b><span>Y</span>our POS</b></a>
+    <span class="phone">واتساب: <b class="ltr">0776 94 46 83</b></span>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <div class="kicker">برنامج كاسة لمحلات الجزائر</div>
+        <h1>الكارني يضيع.<span>البرنامج يتذكّر.</span></h1>
+        <p class="lead">كل بيع، كل دين، وكل قطعة في المخزن مسجّلة على حاسوب محلك، بدون إنترنت. وفي آخر النهار تعرف كم بعت، وكم ربحت، وكم يجب أن يكون في الدرج.</p>
+        <div class="req req-hero" id="request">
+          <h2 class="req-title">جرّب البرنامج أو اشترِه</h2>
+          <p class="req-sub">اكتب معلوماتك، ثم اختر: النسخة التجريبية مجانًا لمدة 14 يومًا، أو النسخة المدفوعة بـ <bdi>9 900 DA</bdi> مرة واحدة.</p>
+          <form class="req-form" id="reqForm" novalidate>
+            <div class="req-2">
+            <div class="req-row"><label for="rq-name">الاسم</label><input id="rq-name" name="name" autocomplete="name" required maxlength="80"></div>
+            <div class="req-row"><label for="rq-shop">اسم المحل</label><input id="rq-shop" name="shop" autocomplete="organization" required maxlength="80"></div>
+          </div>
+          <div class="req-2">
+            <div class="req-row"><label for="rq-phone">رقم الهاتف</label><input id="rq-phone" name="phone" type="tel" inputmode="tel" dir="ltr" placeholder="0555 12 34 56" autocomplete="tel" required maxlength="20"></div>
+            <div class="req-row"><label for="rq-wilaya">الولاية <small>(اختياري)</small></label><input id="rq-wilaya" name="wilaya" list="rq-wilayas" placeholder="مثال: بسكرة" maxlength="40"><datalist id="rq-wilayas"><option value="أدرار"></option><option value="الشلف"></option><option value="الأغواط"></option><option value="أم البواقي"></option><option value="باتنة"></option><option value="بجاية"></option><option value="بسكرة"></option><option value="بشار"></option><option value="البليدة"></option><option value="البويرة"></option><option value="تمنراست"></option><option value="تبسة"></option><option value="تلمسان"></option><option value="تيارت"></option><option value="تيزي وزو"></option><option value="الجزائر"></option><option value="الجلفة"></option><option value="جيجل"></option><option value="سطيف"></option><option value="سعيدة"></option><option value="سكيكدة"></option><option value="سيدي بلعباس"></option><option value="عنابة"></option><option value="قالمة"></option><option value="قسنطينة"></option><option value="المدية"></option><option value="مستغانم"></option><option value="المسيلة"></option><option value="معسكر"></option><option value="ورقلة"></option><option value="وهران"></option><option value="البيض"></option><option value="إليزي"></option><option value="برج بوعريريج"></option><option value="بومرداس"></option><option value="الطارف"></option><option value="تندوف"></option><option value="تيسمسيلت"></option><option value="الوادي"></option><option value="خنشلة"></option><option value="سوق أهراس"></option><option value="تيبازة"></option><option value="ميلة"></option><option value="عين الدفلى"></option><option value="النعامة"></option><option value="عين تموشنت"></option><option value="غرداية"></option><option value="غليزان"></option><option value="تيميمون"></option><option value="برج باجي مختار"></option><option value="أولاد جلال"></option><option value="بني عباس"></option><option value="عين صالح"></option><option value="عين قزام"></option><option value="تقرت"></option><option value="جانت"></option><option value="المغير"></option><option value="المنيعة"></option></datalist></div>
+          </div>
+          <div class="req-row"><label for="rq-type">نوع المحل <small>(اختياري)</small></label><select id="rq-type" name="type"><option value="">اختر</option><option>حانوت ومواد غذائية</option><option>سوبيرات</option><option>خضر وفواكه</option><option>ملابس وأحذية</option><option>عطور وتجميل</option><option>بهارات ومكسرات بالوزن</option><option>قطع غيار</option><option>أدوات ومواد بناء</option><option>نوع آخر</option></select></div>
+          <input class="req-hp" id="rq-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <div class="req-error" id="rqError" role="alert"></div>
+            <div class="req-actions">
+              <button type="submit" class="req-send" id="rqTrial" data-kind="trial"><b>حمّل النسخة التجريبية</b><small>مجانًا لمدة 14 يومًا</small></button>
+              <button type="submit" class="req-send req-alt" id="rqPaid" data-kind="paid"><b>اشترِ النسخة المدفوعة</b><small><bdi>9 900 DA</bdi> مرة واحدة</small></button>
+            </div>
+            <p class="req-privacy">نستعمل رقمك فقط للتواصل معك بخصوص Your POS.</p>
+          </form>
+          <div class="req-done" id="reqDone" hidden aria-live="polite">
+            <h3 id="rqDoneTitle"></h3>
+            <p id="rqDoneText"></p>
+            <a class="req-send" id="rqMain" href="https://wa.me/213776944683" target="_blank" rel="noopener"><span id="rqMainIcon"></span><span id="rqMainLabel"></span></a>
+            <button type="button" class="req-again" id="rqAgain">إرسال طلب آخر</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage" aria-label="صفحة من كارني الديون، وقائمة الديون نفسها في البرنامج">
+        <div class="notebook" aria-hidden="true">
+          <div class="date">الكريدي — سبتمبر</div>
+          <ul>
+            <li><span>عمي الطاهر</span><span class="ltr">1200</span></li>
+            <li><span>مراد ولد الجيران</span><span class="ltr">850</span></li>
+            <li><span>سعيدة ؟؟</span><span class="ltr">2300</span></li>
+            <li class="gone"><span>كريم</span><span class="ltr">400</span></li>
+            <li><span>..............</span><span></span></li>
+          </ul>
+          <div class="stain"></div>
+        </div>
+        <div class="screen">
+          <div class="bar"><span>الديون</span><small>3 زبائن · <span class="ltr">4 350 DA</span></small></div>
+          <div class="debt"><b>الطاهر</b><span class="amt ltr">1 200 DA</span><small>منذ 12 يومًا</small><span class="wa">تذكير واتساب</span></div>
+          <div class="debt"><b>مراد</b><span class="amt ltr">850 DA</span><small>منذ 3 أيام</small><span class="wa">تذكير واتساب</span></div>
+          <div class="debt"><b>سعيدة</b><span class="amt ltr">2 300 DA</span><small class="late">منذ 31 يومًا</small><span class="wa">تذكير واتساب</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="day" class="band">
+    <div class="wrap">
+      <div class="head">
+        <h2>يوم في محلك، مع Your POS</h2>
+        <p>من فتح الباب إلى عدّ الدرج.</p>
+      </div>
+      <ol class="day">
+        <li><time class="ltr">08:00</time><div><h3>الفتح</h3><p>تجد قائمة المنتجات التي قاربت على النفاد، وطلبية المورد محضّرة حسب سرعة البيع. ترسلها له على واتساب.</p></div></li>
+        <li><time class="ltr">11:30</time><div><h3>الزحمة</h3><p>الكاشير يمسح الباركود ويخرج التيكي في الحال. ملصق الميزان يُقرأ بوزنه، والعروض وسعر الجملة تُحسب وحدها. وتخدم أكثر من زبون في نفس الوقت.</p></div></li>
+        <li><time class="ltr">15:00</time><div><h3>وصول السلعة</h3><p>تمسح المنتجات بهاتفك وتكتب الكمية وسعر الشراء. يرتفع المخزون، ويُسجَّل ما بقي للمورد إن لم تدفع كل شيء.</p></div></li>
+        <li><time class="ltr">20:30</time><div><h3>آخر النهار</h3><p>تفتح «تقرير اليوم»: المبيعات والربح والمصاريف، والمبيعات ساعة بساعة. وترسل تذكير الديون لمن تأخر.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="compare">
+    <div class="wrap">
+      <div class="head">
+        <h2>الكارني أو البرنامج؟</h2>
+        <p>نفس العمل الذي تقوم به اليوم، بدون حساب باليد.</p>
+      </div>
+      <div class="compare-wrap">
+        <table class="compare">
+          <thead><tr><th></th><th>الكارني والآلة الحاسبة</th><th class="us">Your POS</th></tr></thead>
+          <tbody>
+            <tr><td>الديون</td><td class="old">بالقلم، وأحيانًا بلا تاريخ</td><td class="new">باسم الزبون وتاريخه وما سدّده، مع تذكير على واتساب</td></tr>
+            <tr><td>المخزون</td><td class="old">تعرف النقص حين يطلبه الزبون</td><td class="new">تنبيه قبل النفاد، وطلبية جاهزة للمورد</td></tr>
+            <tr><td>الربح</td><td class="old">تقدير في آخر الشهر</td><td class="new">رقم كل يوم في تقرير اليوم، ورسوم بيانية للشهر</td></tr>
+            <tr><td>الكاسة</td><td class="old">تثق وتتمنى</td><td class="new">حساب برمز سري لكل كاشير، وتقرير مبيعاته ونقص صندوقه</td></tr>
+            <tr><td>الأسعار</td><td class="old">تغيير السعر لا يترك أثرًا</td><td class="new">سجل يبيّن من غيّر السعر ومتى، وتنبيه عند البيع بخسارة</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="catalog">
+    <div class="wrap">
+      <div class="cat-head">
+        <h2>كل ما في البرنامج</h2>
+        <p>43 ميزة في برنامج واحد، بثمن واحد، دون أي إضافة مدفوعة.</p>
+      </div>
+      <div class="cat-grid">
+          <div class="cat-group">
+            <h3>البيع في الكاسة<small>8</small></h3>
+            <ul><li><b>الباركود ولوحة المنتجات</b><span>بالفئات وصور المنتجات</span></li><li><b>التيكي والفاتورة</b><span>على الطابعة الحرارية، والفاتورة للزبائن</span></li><li><b>البيع بالوزن</b><span>مع قراءة ملصقات الميزان الذكي</span></li><li><b>عدة زبائن في نفس الوقت</b><span>سلة لكل زبون، والتنقل بينها بزر</span></li><li><b>الخصم والعروض</b><span>خصم يدوي، وعروض تُحسب وحدها</span></li><li><b>سعر الجملة</b><span>يُطبَّق وحده على زبائن الجملة</span></li><li><b>المرتجعات والاستبدال</b><span>من بيع سابق أو مباشرة في الكاسة</span></li><li><b>آخر منتج بخط كبير</b><span>يرى الكاشير ما أضافه للتو</span></li></ul>
+          </div>
+          <div class="cat-group">
+            <h3>المخزون<small>8</small></h3>
+            <ul><li><b>المخزون الحي</b><span>ينقص مع كل بيع، وتنبيه قبل النفاد</span></li><li><b>قيمة المخزون</b><span>بسعر الشراء وبسعر البيع</span></li><li><b>أكثر من باركود للمنتج</b><span>لنفس المنتج بأحجام أو موردين مختلفين</span></li><li><b>المقاسات والألوان</b><span>لكل مقاس ولون مخزونه وباركوده</span></li><li><b>تاريخ الصلاحية</b><span>وتنبيه بالمنتجات القريبة من الانتهاء</span></li><li><b>الجرد</b><span>من الحاسوب أو بمسح الباركود بالهاتف</span></li><li><b>استيراد وتصدير Excel</b><span>قائمة المنتجات كاملة في دقائق</span></li><li><b>ملصقات الأسعار</b><span>تُطبع على طابعة الملصقات</span></li></ul>
+          </div>
+          <div class="cat-group">
+            <h3>المشتريات والموردون<small>6</small></h3>
+            <ul><li><b>تسجيل المشتريات</b><span>يرتفع المخزون ويُحدَّث سعر الشراء</span></li><li><b>أكثر من مورد للمنتج</b><span>مع آخر سعر من كل مورد</span></li><li><b>ديون الموردين</b><span>ما عليك لكل مورد، ودفعاتك له</span></li><li><b>طلبيات تلقائية</b><span>حسب سرعة البيع، وتُرسل على واتساب</span></li><li><b>الاستلام من الهاتف</b><span>امسح السلعة عند وصولها</span></li><li><b>سجل تغيّر الأسعار</b><span>من غيّر السعر ومتى</span></li></ul>
+          </div>
+          <div class="cat-group">
+            <h3>الزبائن والكريدي<small>5</small></h3>
+            <ul><li><b>الكريدي</b><span>البيع بالدين، مع الدفع الجزئي</span></li><li><b>تقادم الديون</b><span>من تأخر عن الدفع، ومنذ كم يومًا</span></li><li><b>تذكير على واتساب</b><span>رسالة جاهزة بالمبلغ لكل زبون</span></li><li><b>بطاقات الولاء</b><span>نقاط يربحها الزبون ويخصمها من مشترياته</span></li><li><b>زبائن الجملة</b><span>أسعارهم تُطبَّق وحدها</span></li></ul>
+          </div>
+          <div class="cat-group">
+            <h3>المال والتقارير<small>7</small></h3>
+            <ul><li><b>التقارير والرسوم</b><span>بالساعة وبالشهر، والأكثر مبيعًا</span></li><li><b>تقرير اليوم</b><span>المبيعات والربح والمصاريف، ساعة بساعة</span></li><li><b>صندوق النقد</b><span>كل حركة في الدرج، وما يجب أن يكون فيه</span></li><li><b>المصاريف</b><span>كراء، كهرباء، نقل، أجور…</span></li><li><b>أداء كل كاشير</b><span>مبيعاته وخصوماته ونقص صندوقه</span></li><li><b>تنبيه البيع بخسارة</b><span>قبل تأكيد أي بيع بأقل من سعر الشراء</span></li><li><b>التقرير على واتساب</b><span>ملخص المبيعات بضغطة</span></li></ul>
+          </div>
+          <div class="cat-group">
+            <h3>الفريق والنظام<small>9</small></h3>
+            <ul><li><b>حسابات برمز سري</b><span>وصلاحيات لكل كاشير</span></li><li><b>رمز المسؤول</b><span>للمرتجعات وحذف المنتجات</span></li><li><b>سجل النشاط</b><span>من فعل ماذا، ومتى</span></li><li><b>بدون إنترنت</b><span>كل شيء على حاسوب محلك</span></li><li><b>عدة كاسات وعدة محلات</b><span>على شبكة المحل، بنفس البيانات</span></li><li><b>تطبيق أندرويد للمالك</b><span>على Wi-Fi المحل</span></li><li><b>نسخ احتياطي واسترجاع</b><span>بياناتك محفوظة</span></li><li><b>ثلاث لغات</b><span>العربية والفرنسية والإنجليزية</span></li><li><b>إعداد حسب نوع محلك</b><span>ومساعد يجيب عن أسئلتك داخل البرنامج</span></li></ul>
+          </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="head">
+        <h2>لأي محل؟</h2>
+        <p>عند أول تشغيل تختار نوع محلك، فيجهّز البرنامج أقسامه.</p>
+      </div>
+      <div class="shops">
+        <span>حانوت ومواد غذائية</span><span>سوبيرات</span><span>خضر وفواكه</span><span>ملابس وأحذية</span>
+        <span>عطور وتجميل</span><span>بهارات ومكسرات بالوزن</span><span>قطع غيار</span><span>أدوات ومواد بناء</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="offer">
+    <div class="wrap">
+      <div class="head">
+        <h2>تشتريه مرة واحدة: <span class="price">9 900 DA</span></h2>
+        <p>ثمن البرنامج كاملًا، بدون اشتراك وبكل التحديثات القادمة.</p>
+      </div>
+      <div class="offer">
+        <div><h3>بدون اشتراك</h3><p>ثمن واحد، لا دفع كل شهر ولا كل سنة.</p></div>
+        <div><h3>التحديثات مجانية</h3><p>كل نسخة جديدة تصلك دون دفع إضافي.</p></div>
+        <div><h3>بدون إنترنت</h3><p>البرنامج والتفعيل يعملان على حاسوب محلك.</p></div>
+        <div><h3>خدمة ما بعد البيع</h3><p>نبقى معك بعد الشراء: تواصل معنا على واتساب.</p></div>
+      </div>
+      <div class="trial">
+        <p><b>جرّبه 14 يومًا بكل الميزات، دون مفتاح.</b> بعد التجربة لا تضيع بياناتك: تبقى ظاهرة وقابلة للتصدير حتى تفعّل البرنامج.</p>
+        <a class="btn btn-main" href="#request" data-choose="trial">حمّل النسخة التجريبية</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="head"><h2>أسئلة قبل الشراء</h2></div>
+      <div class="faq">
+        <div><h3>كم ثمن البرنامج؟</h3><p><bdi>9 900 DA</bdi> تدفعها مرة واحدة، وتشمل كل التحديثات القادمة. لا اشتراك شهري ولا سنوي.</p></div>
+        <div><h3>هل هو بالعربية؟</h3><p>نعم، الواجهة كاملة بالعربية، وتتحول إلى الفرنسية أو الإنجليزية بضغطة.</p></div>
+        <div><h3>على أي جهاز يعمل؟</h3><p>على حاسوب بنظام Windows، مع طابعة التيكي الحرارية وقارئ الباركود العادي. ويمكن ربط أكثر من كاسة عبر شبكة المحل.</p></div>
+        <div><h3>هل أستطيع ترك عامل في الكاسة؟</h3><p>نعم. حساب كاشير برمز سري يبيع ويطبع التيكي، ولا يرى الأرباح ولا الإعدادات إلا إذا سمحت له.</p></div>
+        <div><h3>ماذا لو تعطّل الحاسوب؟</h3><p>البرنامج يأخذ نسخًا احتياطية تسترجعها على الحاسوب الجديد. المفتاح مرتبط بالحاسوب، فتواصل معنا لتفعيل الجديد.</p></div>
+        <div><h3>هل أرى المبيعات من هاتفي؟</h3><p>نعم، بتطبيق أندرويد أو من متصفح الهاتف، عندما يكون الهاتف على شبكة Wi-Fi المحل.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="final">
+        <div>
+          <h2>ارمِ الكارني، وجرّب 14 يومًا.</h2>
+          <p>راسلنا على واتساب، نرسل لك البرنامج ونجيب عن أسئلتك.</p>
+          <a class="btn btn-main" href="https://wa.me/213776944683?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%AA%D8%AC%D8%B1%D8%A8%D8%A9%20%D8%A8%D8%B1%D9%86%D8%A7%D9%85%D8%AC%20Your%20POS" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>
+            راسلنا على واتساب
+          </a>
+        </div>
+        <dl>
+          <div><dt>واتساب</dt><dd><span class="v ltr">0776 94 46 83</span><button class="copy" type="button" data-copy="0776944683">نسخ</button></dd></div>
+          <div><dt>البريد الإلكتروني</dt><dd><span class="v ltr">your.pos.dz@gmail.com</span><button class="copy" type="button" data-copy="your.pos.dz@gmail.com">نسخ</button></dd></div>
+          <div><dt>فيسبوك</dt><dd><a href="https://fb.com/share/1aXa68R3fu" target="_blank" rel="noopener">صفحة Your POS</a></dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span class="ltr">2026</span> Your POS</span>
+    <span>برنامج كاسة لمحلات الجزائر، لنظام Windows</span>
+  </div>
+</footer>
+</div>
+
+<script>
+  document.querySelectorAll(".copy").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var text = btn.getAttribute("data-copy");
+      var done = function () { btn.textContent = "تم النسخ"; setTimeout(function () { btn.textContent = "نسخ"; }, 1500); };
+      var select = function () {
+        var el = btn.parentNode.querySelector(".v");
+        var r = document.createRange(); r.selectNodeContents(el);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, select);
+      else select();
+    });
+  });
+</script>
+<script>
+  // Top of the page: the details first, then one of two buttons. "Paid" saves the order to the Google Sheet (a Google
+  // Apps Script web app, see google-sheet-script.gs) and offers WhatsApp with the details written in. "Trial" saves them
+  // too, then gives the download (or, while the installer has no address, asks for the link on WhatsApp).
+  (function () {
+    var SHEET_URL = "";
+    var DOWNLOAD_URL = "";
+    var PAGE = "v2-carnet";
+    var WA = "https://wa.me/213776944683?text=";
+    var WA_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>';
+    var DL_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3h2v9.6l3.3-3.3 1.4 1.4L12 16.4 6.3 10.7l1.4-1.4 3.3 3.3V3zM5 18h14v2H5z"/></svg>';
+    var form = document.getElementById("reqForm");
+    if (!form) return;
+    var kind = "trial";
+    var done = document.getElementById("reqDone");
+    var err = document.getElementById("rqError");
+    var hasDownload = /^https:\/\//.test(DOWNLOAD_URL);
+
+    // Enter in a field counts as the first button (the trial); a click says which one was meant.
+    var buttons = form.querySelectorAll('button[type="submit"]');
+    buttons.forEach(function (b) { b.addEventListener("click", function () { kind = b.getAttribute("data-kind"); }); });
+    var busy = function (on) {
+      buttons.forEach(function (b) { b.disabled = on; });
+      var b = document.getElementById(kind === "paid" ? "rqPaid" : "rqTrial");
+      if (on) { b.setAttribute("data-label", b.innerHTML); b.textContent = "جارٍ الإرسال…"; }
+      else if (b.getAttribute("data-label")) { b.innerHTML = b.getAttribute("data-label"); }
+    };
+
+    var val = function (id) { return document.getElementById(id).value.trim(); };
+    var mark = function (id, bad) { document.getElementById(id).setAttribute("aria-invalid", bad ? "true" : "false"); };
+    var phoneOk = function (p) { var d = p.replace(/[^0-9]/g, ""); if (d.indexOf("00213") === 0) d = d.slice(2); return /^0\d{8,9}$/.test(d) || /^213\d{8,9}$/.test(d); };
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (e.submitter && e.submitter.getAttribute("data-kind")) kind = e.submitter.getAttribute("data-kind");
+      var data = { kind: kind, name: val("rq-name"), shop: val("rq-shop"), phone: val("rq-phone"), wilaya: val("rq-wilaya"), type: val("rq-type"), website: val("rq-website"), page: PAGE };
+      var problems = [];
+      mark("rq-name", data.name.length < 2); if (data.name.length < 2) problems.push("اكتب اسمك");
+      mark("rq-shop", data.shop.length < 2); if (data.shop.length < 2) problems.push("اسم المحل");
+      mark("rq-phone", !phoneOk(data.phone)); if (!phoneOk(data.phone)) problems.push("رقم هاتف صحيح (مثل 0555 12 34 56)");
+      if (problems.length) { err.textContent = "ينقص: " + problems.join("، ") + "."; return; }
+      err.textContent = "";
+
+      var lines = [kind === "paid" ? "السلام عليكم، أريد شراء برنامج Your POS (9 900 DA)." : "السلام عليكم، أريد تجربة برنامج Your POS.", "الاسم: " + data.name, "المحل: " + data.shop];
+      if (data.type) lines.push("نوع المحل: " + data.type);
+      lines.push("الهاتف: " + data.phone);
+      if (data.wilaya) lines.push("الولاية: " + data.wilaya);
+      var waLink = WA + encodeURIComponent(lines.join("\n"));
+
+      var show = function (saved) {
+        var t, p, href, label, icon;
+        if (kind === "trial" && hasDownload) {
+          t = "رابط التحميل جاهز.";
+          p = "اضغط الزر لتحميل البرنامج، ثم ثبّته على حاسوب محلك. إذا ظهر تحذير Windows، اضغط «مزيد من المعلومات» ثم «تشغيل على أي حال».";
+          href = DOWNLOAD_URL; label = "تحميل النسخة التجريبية"; icon = DL_ICON;
+        } else if (kind === "trial") {
+          t = saved ? "تم تسجيل طلبك، شكرًا." : "آخر خطوة: أرسل طلبك على واتساب.";
+          p = saved ? "نرسل لك رابط التحميل على الرقم " + data.phone + ". ولرد أسرع، أرسل الطلب على واتساب أيضًا." : "اضغط الزر فيفتح واتساب برسالة جاهزة فيها معلوماتك، ثم اضغط إرسال، ونرسل لك رابط التحميل.";
+          href = waLink; label = "أرسل الطلب على واتساب"; icon = WA_ICON;
+        } else {
+          t = saved ? "تم تسجيل طلبك، شكرًا." : "آخر خطوة: أرسل طلبك على واتساب.";
+          p = saved ? "سنتصل بك على الرقم " + data.phone + " لإتمام الشراء. ولرد أسرع، أرسل الطلب على واتساب أيضًا." : "اضغط الزر فيفتح واتساب برسالة جاهزة فيها معلوماتك، ثم اضغط إرسال.";
+          href = waLink; label = "أرسل الطلب على واتساب"; icon = WA_ICON;
+        }
+        document.getElementById("rqDoneTitle").textContent = t;
+        document.getElementById("rqDoneText").textContent = p;
+        var main = document.getElementById("rqMain");
+        main.href = href;
+        document.getElementById("rqMainLabel").textContent = label;
+        document.getElementById("rqMainIcon").innerHTML = icon;
+        form.hidden = true; done.hidden = false;
+        main.focus();
+      };
+      if (data.website) { show(true); return; } // a robot filled the hidden field
+      if (!/^https:\/\/script\.google\.com\//.test(SHEET_URL)) { show(false); return; }
+      busy(true);
+      var timeout = new Promise(function (_, reject) { setTimeout(function () { reject(new Error("timeout")); }, 8000); });
+      Promise.race([fetch(SHEET_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }), timeout])
+        .then(function () { show(true); }, function () { show(false); })
+        .then(function () { busy(false); });
+    });
+    document.getElementById("rqAgain").addEventListener("click", function () { form.reset(); done.hidden = true; form.hidden = false; document.getElementById("rq-name").focus(); });
+    document.querySelectorAll("[data-choose]").forEach(function (a) { a.addEventListener("click", function () { setTimeout(function () { document.getElementById("rq-name").focus({ preventScroll: true }); }, 400); }); });
+  })();
+</script>
+
+
+</body>
+</html>
