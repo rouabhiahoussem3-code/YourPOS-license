@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Your POS | برنامج كاسة لمحلات الجزائر</title>
+<meta name="description" content="برنامج كاسة لمحلات الجزائر: البيع بالباركود والتيكي، المخزون، الكريدي وتقرير اليوم. بدون إنترنت، 9 900 DA مرة واحدة بدون اشتراك. جرّبه 14 يومًا مجانًا.">
+<meta property="og:title" content="Your POS | برنامج كاسة لمحلات الجزائر">
+<meta property="og:description" content="برنامج كاسة لمحلات الجزائر: البيع بالباركود والتيكي، المخزون، الكريدي وتقرير اليوم. بدون إنترنت، 9 900 DA مرة واحدة بدون اشتراك. جرّبه 14 يومًا مجانًا.">
+<meta property="og:type" content="website">
+<style>body{margin:0}img{max-width:100%}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alexandria:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  /* Layout: a shop counter — the pitch on the reading side, a printed ticket beside it; then one calm column of
+     answers a shop owner asks, each section a plain sheet on the page. */
+  :root {
+    --bg: #f3f7f7;
+    --surface: #ffffff;
+    --ink: #10262b;
+    --muted: #56696d;
+    --line: #d9e3e4;
+    --brand: #0881a3;
+    --brand-ink: #ffffff;
+    --brand-soft: #e3f1f5;
+    --accent: #f78f60;
+    --paper: #fffdf8;
+    --paper-ink: #1d2224;
+    --paper-muted: #6b7275;
+    --shadow: 0 18px 40px -18px rgba(16, 38, 43, 0.35);
+    --font-display: "Alexandria", "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+    --font-body: "IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+    --wrap: 1120px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b171a; --surface: #112327; --ink: #e5eff0; --muted: #94aaae; --line: #21393e;
+      --brand: #3db0d1; --brand-ink: #06232b; --brand-soft: #143741; --accent: #f7a07a;
+      --shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.7);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0b171a; --surface: #112327; --ink: #e5eff0; --muted: #94aaae; --line: #21393e;
+    --brand: #3db0d1; --brand-ink: #06232b; --brand-soft: #143741; --accent: #f7a07a;
+    --shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.7);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.75; }
+  a { color: var(--brand); }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  .wrap { max-width: var(--wrap); margin-inline: auto; padding-inline: 20px; }
+  h1, h2, h3 { font-family: var(--font-display); line-height: 1.3; text-wrap: balance; margin: 0; }
+  p { margin: 0; }
+  .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; direction: ltr; unicode-bidi: isolate; }
+
+  /* Header */
+  .top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+  .top .wrap { display: flex; align-items: center; gap: 20px; padding-block: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+  .brand img { width: 38px; height: 38px; border-radius: 9px; background: #fff; padding: 3px; border: 1px solid var(--line); }
+  .brand b { font-family: var(--font-display); font-size: 21px; direction: ltr; letter-spacing: -0.3px; }
+  .brand b span { color: var(--accent); }
+  .top nav { display: flex; gap: 22px; margin-inline-start: auto; font-size: 15px; }
+  .top nav a { color: var(--muted); text-decoration: none; }
+  .top nav a:hover { color: var(--ink); }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 22px; border-radius: 10px; font-weight: 600; font-size: 16px; text-decoration: none; border: 1px solid transparent; cursor: pointer; font-family: var(--font-body); }
+  .btn-primary { background: var(--brand); color: var(--brand-ink); }
+  .btn-primary:hover { filter: brightness(1.07); }
+  .btn-ghost { border-color: var(--line); color: var(--ink); background: var(--surface); }
+  .btn-ghost:hover { border-color: var(--brand); }
+  .btn svg { width: 19px; height: 19px; fill: currentColor; flex: none; }
+  .top .btn { padding: 9px 16px; font-size: 15px; }
+
+  /* Hero */
+  .hero .wrap { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 56px; align-items: center; padding-block: 64px 72px; }
+  .eyebrow { display: inline-block; font-size: 14px; font-weight: 600; color: var(--brand); background: var(--brand-soft); padding: 4px 12px; border-radius: 999px; margin-bottom: 18px; }
+  .hero h1 { font-size: clamp(34px, 5vw, 54px); font-weight: 800; letter-spacing: -0.5px; }
+  .hero h1 em { font-style: normal; color: var(--brand); }
+  .hero .lead { font-size: 19px; color: var(--muted); margin-top: 18px; max-width: 34em; }
+  .hero .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  .facts { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 28px; padding: 0; list-style: none; font-size: 15px; color: var(--ink); }
+  .facts li { display: flex; align-items: center; gap: 8px; }
+  .facts li::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: none; }
+
+  /* The ticket, as a thermal printer gives it */
+  .ticket-stage { display: flex; justify-content: center; }
+  .ticket { position: relative; width: 100%; max-width: 330px; background: var(--paper); color: var(--paper-ink); padding: 26px 24px 30px; box-shadow: var(--shadow); font-size: 14px; line-height: 1.6; transform: rotate(-1.5deg); }
+  .ticket::after { content: ""; position: absolute; inset-inline: 0; bottom: -10px; height: 10px; background: linear-gradient(-45deg, transparent 6px, var(--paper) 0) 0 0 / 12px 10px, linear-gradient(45deg, transparent 6px, var(--paper) 0) 0 0 / 12px 10px; }
+  .ticket .shop { text-align: center; font-family: var(--font-display); font-weight: 700; font-size: 17px; }
+  .ticket .meta { text-align: center; color: var(--paper-muted); font-size: 12.5px; }
+  .ticket hr { border: 0; border-top: 1.5px dashed #c9c6bd; margin: 12px 0; }
+  .ticket .row { display: flex; justify-content: space-between; gap: 10px; }
+  .ticket .row .num { white-space: nowrap; }
+  .ticket .qty { color: var(--paper-muted); font-size: 12.5px; }
+  .ticket .total { font-family: var(--font-display); font-weight: 800; font-size: 20px; }
+  .ticket .thanks { text-align: center; margin-top: 12px; font-weight: 600; }
+  .ticket .loy { text-align: center; color: var(--paper-muted); font-size: 12.5px; }
+
+  /* Sections */
+  section { padding-block: 72px; }
+  section + section { border-top: 1px solid var(--line); }
+  .head { max-width: 40em; margin-bottom: 36px; }
+  .head h2 { font-size: clamp(27px, 3.4vw, 36px); font-weight: 700; }
+  .head p { color: var(--muted); margin-top: 10px; font-size: 18px; }
+
+  .pains { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .pain { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 26px 26px 28px; }
+  .pain .tag { font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: 0.2px; }
+  .pain h3 { font-size: 22px; font-weight: 700; margin-top: 4px; }
+  .pain p { color: var(--muted); margin-top: 10px; }
+
+  .groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 36px; }
+  .groups h3 { font-size: 19px; font-weight: 700; padding-bottom: 10px; border-bottom: 2px solid var(--brand); margin-bottom: 8px; }
+  .groups ul { list-style: none; margin: 0; padding: 0; }
+  .groups li { padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 16px; }
+  .groups li small { display: block; color: var(--muted); font-size: 14px; line-height: 1.5; }
+
+  .deal { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 40px; }
+  .deal h2 { font-size: clamp(27px, 3.4vw, 36px); }
+  .deal .price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-top: 18px; }
+  .deal .price b { font: 800 clamp(40px, 5vw, 52px) var(--font-display); color: var(--brand); direction: ltr; unicode-bidi: isolate; white-space: nowrap; }
+  .deal .price span { color: var(--muted); }
+  .deal .price-note { margin-top: 10px; color: var(--muted); }
+  .deal ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
+  .deal li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; }
+  .deal li svg { width: 22px; height: 22px; margin-top: 4px; fill: none; stroke: var(--brand); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .deal li b { display: block; }
+  .deal li span { color: var(--muted); font-size: 15.5px; }
+
+  .steps { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; counter-reset: step; }
+  .steps li { counter-increment: step; position: relative; padding-top: 58px; }
+  .steps li::before { content: counter(step); position: absolute; top: 0; inset-inline-start: 0; width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: var(--brand-soft); color: var(--brand); font-family: var(--font-display); font-weight: 800; font-size: 19px; }
+  .steps h3 { font-size: 18px; font-weight: 700; }
+  .steps p { color: var(--muted); font-size: 15.5px; margin-top: 6px; }
+
+  .faq { max-width: 50em; }
+  .faq details { border-bottom: 1px solid var(--line); }
+  .faq summary { cursor: pointer; list-style: none; padding: 18px 0; font-weight: 600; font-size: 18px; display: flex; justify-content: space-between; gap: 16px; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; color: var(--brand); font-size: 24px; line-height: 1; flex: none; }
+  .faq details[open] summary::after { content: "−"; }
+  .faq details p { color: var(--muted); padding-bottom: 18px; max-width: 42em; }
+
+  .contact { background: var(--brand); color: var(--brand-ink); border-radius: 20px; padding: 48px 40px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 36px; align-items: center; }
+  .contact h2 { font-size: clamp(27px, 3.4vw, 38px); }
+  .contact p { margin-top: 10px; opacity: 0.9; }
+  .contact .btn-primary { background: var(--brand-ink); color: var(--brand); margin-top: 24px; }
+  .channels { display: grid; gap: 12px; }
+  .channel { background: color-mix(in srgb, var(--brand-ink) 12%, transparent); border-radius: 12px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .channel .label { font-size: 13px; opacity: 0.8; width: 100%; }
+  .channel .value { font-weight: 700; font-size: 18px; user-select: all; }
+  .channel a { color: inherit; }
+  .copy { margin-inline-start: auto; background: transparent; color: inherit; border: 1px solid color-mix(in srgb, var(--brand-ink) 45%, transparent); border-radius: 8px; padding: 4px 12px; font: inherit; font-size: 14px; cursor: pointer; }
+
+  footer { padding-block: 36px 48px; color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+
+  @media (max-width: 900px) {
+    .hero .wrap { grid-template-columns: 1fr; gap: 44px; padding-block: 40px 56px; }
+    .groups { grid-template-columns: 1fr; gap: 28px; }
+    .deal, .contact { grid-template-columns: 1fr; padding: 28px 22px; }
+    .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .top nav { display: none; }
+    .top .btn { margin-inline-start: auto; }
+  }
+  @media (max-width: 600px) {
+    body { font-size: 16px; }
+    .pains, .steps { grid-template-columns: 1fr; }
+    section { padding-block: 52px; }
+    .ticket { transform: none; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ticket { transition: transform 0.3s ease; }
+    .ticket:hover { transform: rotate(0deg); }
+  }
+
+  /* Trial request form: saved to the owner's Google Sheet, then offered to WhatsApp */
+  .req { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 48px; align-items: start; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 20px; padding: 40px; }
+  .req-intro h2 { font-size: clamp(28px, 3.5vw, 38px); font-weight: 800; }
+  .req-intro p { color: var(--muted); margin-top: 10px; }
+  .req-points { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 8px; }
+  .req-points li { display: flex; gap: 10px; align-items: center; }
+  .req-points li::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--r-accent); flex: none; }
+  .req-form, .req-done { display: grid; gap: 14px; align-content: start; min-width: 0; }
+  .req-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .req-row { display: grid; gap: 6px; min-width: 0; }
+  .req-row label { font-size: 14.5px; font-weight: 600; }
+  .req-row label small { color: var(--muted); font-weight: 400; }
+  .req-row input, .req-row select { width: 100%; font: inherit; font-size: 16px; line-height: 1.4; padding: 12px 14px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); }
+  .req-row input:focus, .req-row select:focus { outline: none; border-color: var(--r-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--r-accent) 25%, transparent); }
+  .req-row input[aria-invalid="true"] { border-color: var(--r-error); }
+  .req-form { position: relative; }
+  .req-hp { position: absolute; top: 0; inset-inline-start: 0; width: 1px; height: 1px; opacity: 0; overflow: hidden; clip-path: inset(50%); pointer-events: none; }
+  .req-error { color: var(--r-error); font-size: 14.5px; font-weight: 600; min-height: 1.4em; }
+  .req-send { display: inline-flex; justify-content: center; align-items: center; gap: 8px; width: 100%; padding: 14px 20px; border: 0; border-radius: 12px; background: var(--r-accent); color: var(--r-on); font: inherit; font-weight: 700; font-size: 17px; cursor: pointer; text-decoration: none; }
+  .req-send:hover { filter: brightness(1.07); }
+  .req-send[disabled] { opacity: 0.6; cursor: default; }
+  .req-send svg { width: 20px; height: 20px; fill: currentColor; flex: none; }
+  .req-privacy { color: var(--muted); font-size: 13.5px; }
+  .req-done h3 { font-size: 24px; font-weight: 800; }
+  .req-done p { color: var(--muted); }
+  .req-again { background: none; border: 0; padding: 0; color: var(--muted); font: inherit; font-size: 15px; cursor: pointer; text-decoration: underline; justify-self: start; }
+  @media (max-width: 860px) { .req { grid-template-columns: 1fr; padding: 28px 20px; gap: 28px; } }
+  @media (max-width: 480px) { .req-2 { grid-template-columns: 1fr; } }
+  .request, .req { --r-accent: var(--brand); --r-on: var(--brand-ink); }
+  :root { --r-error: #d04444; }
+
+  /* The form at the top of the page, under the headline */
+  .req.req-hero { display: grid; grid-template-columns: 1fr; gap: 12px; padding: 24px; border-radius: 16px; margin-top: 28px; max-width: 580px; box-shadow: 0 24px 48px -30px rgba(0, 0, 0, 0.5); }
+  .req-hero .req-title { font-size: 21px; font-weight: 800; }
+  .req-hero .req-sub { color: var(--muted); font-size: 15px; margin-top: -6px; }
+  .req-hero .req-form, .req-hero .req-done { gap: 12px; }
+  .req-hero .dl-facts[hidden] { display: none; }
+  .req-hero .req-row input, .req-hero .req-row select { padding: 10px 12px; }
+  @media (max-width: 860px) { .req.req-hero { padding: 20px 16px; } }
+
+  /* Two choices at the top: order the paid version, or download the trial */
+  .choice { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: var(--bg); padding: 6px; border-radius: 14px; border: 1px solid var(--line); }
+  .choice button { display: grid; gap: 2px; text-align: start; padding: 10px 14px; border-radius: 10px; border: 0; background: transparent; color: var(--ink); font: inherit; line-height: 1.4; cursor: pointer; }
+  .choice button b { font-size: 16px; font-weight: 800; }
+  .choice button small { color: var(--muted); font-size: 13px; }
+  .choice button[aria-pressed="true"] { background: var(--surface); box-shadow: inset 0 0 0 2px var(--r-accent), 0 8px 16px -10px rgba(0, 0, 0, 0.35); }
+  .dl-facts { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 15px; }
+  .dl-facts li { display: flex; gap: 10px; align-items: center; }
+  .dl-facts li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--r-accent); flex: none; }
+  @media (max-width: 420px) { .choice button { padding: 9px 10px; } .choice button b { font-size: 15px; } }
+
+  /* Details first, then one of two buttons */
+  .req-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .req-actions .req-send { flex-direction: column; gap: 1px; padding: 12px 14px; line-height: 1.35; }
+  .req-actions .req-send small { font-size: 13px; font-weight: 500; opacity: 0.85; }
+  .req-send.req-alt { background: var(--ink); color: var(--bg); }
+  bdi { white-space: nowrap; }
+  @media (max-width: 480px) { .req-actions { grid-template-columns: 1fr; } }
+
+  /* Everything in the program, by group */
+  .catalog .cat-head { max-width: 40em; margin-bottom: 40px; }
+  .catalog .cat-head h2 { font-size: clamp(28px, 3.6vw, 42px); font-weight: 800; }
+  .catalog .cat-head p { color: var(--muted); margin-top: 10px; font-size: 18px; }
+  .cat-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; align-items: start; }
+  .cat-group { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px 22px 14px; }
+  .cat-group h3 { font-size: 19px; font-weight: 800; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding-bottom: 12px; border-bottom: 2px solid var(--c-accent); }
+  .cat-group h3 small { font-size: 13px; font-weight: 600; color: var(--c-accent); }
+  .cat-group ul { list-style: none; margin: 0; padding: 0; }
+  .cat-group li { padding: 10px 0; border-bottom: 1px solid var(--line); line-height: 1.5; }
+  .cat-group li:last-child { border-bottom: 0; }
+  .cat-group li b { display: block; font-weight: 700; font-size: 16px; }
+  .cat-group li span { display: block; color: var(--muted); font-size: 14px; margin-top: 2px; }
+  @media (max-width: 980px) { .cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 600px) { .cat-grid { grid-template-columns: 1fr; } .cat-group { padding: 18px 16px 10px; } }
+  .catalog { --c-accent: var(--brand); }
+</style>
+
+</head>
+<body>
+<div dir="rtl" lang="ar">
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Your POS">
+      <img src="data:image/png;base64,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" alt="">
+      <b><span>Y</span>our POS</b>
+    </a>
+    <nav aria-label="أقسام الصفحة">
+      <a href="#features">المزايا</a>
+      <a href="#deal">الشراء</a>
+      <a href="#how">كيف تبدأ</a>
+      <a href="#faq">الأسئلة</a>
+    </nav>
+    <a class="btn btn-primary" href="#request" data-choose="trial">جرّبه مجانًا</a>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">برنامج كاسة لمحلات الجزائر</span>
+        <h1>كاسة محلّك، <em>بدون إنترنت</em> وبدون اشتراك شهري.</h1>
+        <p class="lead">البيع بالباركود والتيكي، المخزون، الكريدي، وتقرير اليوم في برنامج واحد بالعربية. يعمل على حاسوب محلك، وتدفع ثمنه مرة واحدة.</p>
+        <div class="req req-hero" id="request">
+          <h2 class="req-title">جرّب البرنامج أو اشترِه</h2>
+          <p class="req-sub">اكتب معلوماتك، ثم اختر: النسخة التجريبية مجانًا لمدة 14 يومًا، أو النسخة المدفوعة بـ <bdi>9 900 DA</bdi> مرة واحدة.</p>
+          <form class="req-form" id="reqForm" novalidate>
+            <div class="req-2">
+            <div class="req-row"><label for="rq-name">الاسم</label><input id="rq-name" name="name" autocomplete="name" required maxlength="80"></div>
+            <div class="req-row"><label for="rq-shop">اسم المحل</label><input id="rq-shop" name="shop" autocomplete="organization" required maxlength="80"></div>
+          </div>
+          <div class="req-2">
+            <div class="req-row"><label for="rq-phone">رقم الهاتف</label><input id="rq-phone" name="phone" type="tel" inputmode="tel" dir="ltr" placeholder="0555 12 34 56" autocomplete="tel" required maxlength="20"></div>
+            <div class="req-row"><label for="rq-wilaya">الولاية <small>(اختياري)</small></label><input id="rq-wilaya" name="wilaya" list="rq-wilayas" placeholder="مثال: بسكرة" maxlength="40"><datalist id="rq-wilayas"><option value="أدرار"></option><option value="الشلف"></option><option value="الأغواط"></option><option value="أم البواقي"></option><option value="باتنة"></option><option value="بجاية"></option><option value="بسكرة"></option><option value="بشار"></option><option value="البليدة"></option><option value="البويرة"></option><option value="تمنراست"></option><option value="تبسة"></option><option value="تلمسان"></option><option value="تيارت"></option><option value="تيزي وزو"></option><option value="الجزائر"></option><option value="الجلفة"></option><option value="جيجل"></option><option value="سطيف"></option><option value="سعيدة"></option><option value="سكيكدة"></option><option value="سيدي بلعباس"></option><option value="عنابة"></option><option value="قالمة"></option><option value="قسنطينة"></option><option value="المدية"></option><option value="مستغانم"></option><option value="المسيلة"></option><option value="معسكر"></option><option value="ورقلة"></option><option value="وهران"></option><option value="البيض"></option><option value="إليزي"></option><option value="برج بوعريريج"></option><option value="بومرداس"></option><option value="الطارف"></option><option value="تندوف"></option><option value="تيسمسيلت"></option><option value="الوادي"></option><option value="خنشلة"></option><option value="سوق أهراس"></option><option value="تيبازة"></option><option value="ميلة"></option><option value="عين الدفلى"></option><option value="النعامة"></option><option value="عين تموشنت"></option><option value="غرداية"></option><option value="غليزان"></option><option value="تيميمون"></option><option value="برج باجي مختار"></option><option value="أولاد جلال"></option><option value="بني عباس"></option><option value="عين صالح"></option><option value="عين قزام"></option><option value="تقرت"></option><option value="جانت"></option><option value="المغير"></option><option value="المنيعة"></option></datalist></div>
+          </div>
+          <div class="req-row"><label for="rq-type">نوع المحل <small>(اختياري)</small></label><select id="rq-type" name="type"><option value="">اختر</option><option>حانوت ومواد غذائية</option><option>سوبيرات</option><option>خضر وفواكه</option><option>ملابس وأحذية</option><option>عطور وتجميل</option><option>بهارات ومكسرات بالوزن</option><option>قطع غيار</option><option>أدوات ومواد بناء</option><option>نوع آخر</option></select></div>
+          <input class="req-hp" id="rq-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <div class="req-error" id="rqError" role="alert"></div>
+            <div class="req-actions">
+              <button type="submit" class="req-send" id="rqTrial" data-kind="trial"><b>حمّل النسخة التجريبية</b><small>مجانًا لمدة 14 يومًا</small></button>
+              <button type="submit" class="req-send req-alt" id="rqPaid" data-kind="paid"><b>اشترِ النسخة المدفوعة</b><small><bdi>9 900 DA</bdi> مرة واحدة</small></button>
+            </div>
+            <p class="req-privacy">نستعمل رقمك فقط للتواصل معك بخصوص Your POS.</p>
+          </form>
+          <div class="req-done" id="reqDone" hidden aria-live="polite">
+            <h3 id="rqDoneTitle"></h3>
+            <p id="rqDoneText"></p>
+            <a class="req-send" id="rqMain" href="https://wa.me/213776944683" target="_blank" rel="noopener"><span id="rqMainIcon"></span><span id="rqMainLabel"></span></a>
+            <button type="button" class="req-again" id="rqAgain">إرسال طلب آخر</button>
+          </div>
+        </div><ul class="facts">
+          <li><bdi>9 900 DA</bdi> مرة واحدة</li>
+          <li>14 يومًا تجربة بكل الميزات</li>
+          <li>التحديثات مجانية</li>
+          <li>خدمة ما بعد البيع</li>
+          <li>عربي وفرنسي وإنجليزي</li>
+        </ul>
+      </div>
+
+      <div class="ticket-stage" aria-label="مثال على تيكي يطبعه البرنامج">
+        <div class="ticket">
+          <div class="shop">محل النور</div>
+          <div class="meta">تيكي رقم <span class="num">00128</span> · <span class="num">29/09/2026 10:42</span></div>
+          <hr>
+          <div class="row"><span>حليب 1 لتر<br><span class="qty"><span class="num">2 × 130,00</span></span></span><span class="num">260,00</span></div>
+          <div class="row"><span>سكر 1 كغ<br><span class="qty"><span class="num">1 × 95,00</span></span></span><span class="num">95,00</span></div>
+          <div class="row"><span>زيت 5 لتر<br><span class="qty"><span class="num">1 × 650,00</span></span></span><span class="num">650,00</span></div>
+          <div class="row"><span>زيتون أسود بالوزن<br><span class="qty"><span class="num">0,450 kg × 800,00</span></span></span><span class="num">360,00</span></div>
+          <hr>
+          <div class="row total"><span>المجموع</span><span class="num">1 365,00 DA</span></div>
+          <div class="row"><span>نقدًا</span><span class="num">1 500,00</span></div>
+          <div class="row"><span>الباقي</span><span class="num">135,00</span></div>
+          <hr>
+          <div class="loy">نقاط الولاء: <span class="num">+13</span></div>
+          <div class="thanks">شكرًا لزيارتكم</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="problems">
+    <div class="wrap">
+      <div class="head">
+        <h2>أربعة أسئلة يطرحها كل صاحب محل</h2>
+        <p>والبرنامج يجيب عنها كل يوم، دون دفتر ولا حساب باليد.</p>
+      </div>
+      <div class="pains">
+        <article class="pain">
+          <div class="tag">الكريدي</div>
+          <h3>من يدين لك، وبكم؟</h3>
+          <p>كل دين مسجّل باسم الزبون وتاريخه، مع ما سدّده وما بقي عليه. تذكير جاهز يُرسَل له على واتساب بضغطة، بدل الكارني الذي يضيع أو يُختلف عليه.</p>
+        </article>
+        <article class="pain">
+          <div class="tag">المخزون</div>
+          <h3>ماذا بقي في المخزن؟</h3>
+          <p>كل بيع ينقص من المخزون وحده. تنبيه عندما يقترب منتج من النفاد، وطلبية للمورد تُحضَّر حسب سرعة البيع، وقيمة ما على الرفوف بسعر الشراء وسعر البيع.</p>
+        </article>
+        <article class="pain">
+          <div class="tag">الكاسة</div>
+          <h3>هل تعرف ما يحدث في الكاسة؟</h3>
+          <p>لكل كاشير حساب برمز سري لا يرى إلا ما تسمح به. تقرير لكل كاشير: مبيعاته وخصوماته ومرتجعاته ونقص صندوقه، وتنبيه قبل أي بيع بأقل من سعر الشراء.</p>
+        </article>
+        <article class="pain">
+          <div class="tag">آخر النهار</div>
+          <h3>كم ربحت اليوم؟</h3>
+          <p>تقرير اليوم يعرض المبيعات والربح والمصاريف، والمبيعات ساعة بساعة، والأكثر مبيعًا. وترسله على واتساب بضغطة.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="features" class="catalog">
+    <div class="wrap">
+      <div class="cat-head">
+        <h2>كل ما يحتاجه المحل، في مكان واحد</h2>
+        <p>43 ميزة في برنامج واحد، بثمن واحد، دون أي إضافة مدفوعة.</p>
+      </div>
+      <div class="cat-grid">
+          <div class="cat-group">
+            <h3>البيع في الكاسة<small>8</small></h3>
+            <ul><li><b>الباركود ولوحة المنتجات</b><span>بالفئات وصور المنتجات</span></li><li><b>التيكي والفاتورة</b><span>على الطابعة الحرارية، والفاتورة للزبائن</span></li><li><b>البيع بالوزن</b><span>مع قراءة ملصقات الميزان الذكي</span></li><li><b>عدة زبائن في نفس الوقت</b><span>سلة لكل زبون، والتنقل بينها بزر</span></li><li><b>الخصم والعروض</b><span>خصم يدوي، وعروض تُحسب وحدها</span></li><li><b>سعر الجملة</b><span>يُطبَّق وحده على زبائن الجملة</span></li><li><b>المرتجعات والاستبدال</b><span>من بيع سابق أو مباشرة في الكاسة</span></li><li><b>آخر منتج بخط كبير</b><span>يرى الكاشير ما أضافه للتو</span></li></ul>
+          </div>
+          <div class="cat-group">
+            <h3>المخزون<small>8</small></h3>
+            <ul><li><b>المخزون الحي</b><span>ينقص مع كل بيع، وتنبيه قبل النفاد</span></li><li><b>قيمة المخزون</b><span>بسعر الشراء وبسعر البيع</span></li><li><b>أكثر من باركود للمنتج</b><span>لنفس المنتج بأحجام أو موردين مختلفين</span></li><li><b>المقاسات والألوان</b><span>لكل مقاس ولون مخزونه وباركوده</span></li><li><b>تاريخ الصلاحية</b><span>وتنبيه بالمنتجات القريبة من الانتهاء</span></li><li><b>الجرد</b><span>من الحاسوب أو بمسح الباركود بالهاتف</span></li><li><b>استيراد وتصدير Excel</b><span>قائمة المنتجات كاملة في دقائق</span></li><li><b>ملصقات الأسعار</b><span>تُطبع على طابعة الملصقات</span></li></ul>
+          </div>
+          <div class="cat-group">
+            <h3>المشتريات والموردون<small>6</small></h3>
+            <ul><li><b>تسجيل المشتريات</b><span>يرتفع المخزون ويُحدَّث سعر الشراء</span></li><li><b>أكثر من مورد للمنتج</b><span>مع آخر سعر من كل مورد</span></li><li><b>ديون الموردين</b><span>ما عليك لكل مورد، ودفعاتك له</span></li><li><b>طلبيات تلقائية</b><span>حسب سرعة البيع، وتُرسل على واتساب</span></li><li><b>الاستلام من الهاتف</b><span>امسح السلعة عند وصولها</span></li><li><b>سجل تغيّر الأسعار</b><span>من غيّر السعر ومتى</span></li></ul>
+          </div>
+          <div class="cat-group">
+            <h3>الزبائن والكريدي<small>5</small></h3>
+            <ul><li><b>الكريدي</b><span>البيع بالدين، مع الدفع الجزئي</span></li><li><b>تقادم الديون</b><span>من تأخر عن الدفع، ومنذ كم يومًا</span></li><li><b>تذكير على واتساب</b><span>رسالة جاهزة بالمبلغ لكل زبون</span></li><li><b>بطاقات الولاء</b><span>نقاط يربحها الزبون ويخصمها من مشترياته</span></li><li><b>زبائن الجملة</b><span>أسعارهم تُطبَّق وحدها</span></li></ul>
+          </div>
+          <div class="cat-group">
+            <h3>المال والتقارير<small>7</small></h3>
+            <ul><li><b>التقارير والرسوم</b><span>بالساعة وبالشهر، والأكثر مبيعًا</span></li><li><b>تقرير اليوم</b><span>المبيعات والربح والمصاريف، ساعة بساعة</span></li><li><b>صندوق النقد</b><span>كل حركة في الدرج، وما يجب أن يكون فيه</span></li><li><b>المصاريف</b><span>كراء، كهرباء، نقل، أجور…</span></li><li><b>أداء كل كاشير</b><span>مبيعاته وخصوماته ونقص صندوقه</span></li><li><b>تنبيه البيع بخسارة</b><span>قبل تأكيد أي بيع بأقل من سعر الشراء</span></li><li><b>التقرير على واتساب</b><span>ملخص المبيعات بضغطة</span></li></ul>
+          </div>
+          <div class="cat-group">
+            <h3>الفريق والنظام<small>9</small></h3>
+            <ul><li><b>حسابات برمز سري</b><span>وصلاحيات لكل كاشير</span></li><li><b>رمز المسؤول</b><span>للمرتجعات وحذف المنتجات</span></li><li><b>سجل النشاط</b><span>من فعل ماذا، ومتى</span></li><li><b>بدون إنترنت</b><span>كل شيء على حاسوب محلك</span></li><li><b>عدة كاسات وعدة محلات</b><span>على شبكة المحل، بنفس البيانات</span></li><li><b>تطبيق أندرويد للمالك</b><span>على Wi-Fi المحل</span></li><li><b>نسخ احتياطي واسترجاع</b><span>بياناتك محفوظة</span></li><li><b>ثلاث لغات</b><span>العربية والفرنسية والإنجليزية</span></li><li><b>إعداد حسب نوع محلك</b><span>ومساعد يجيب عن أسئلتك داخل البرنامج</span></li></ul>
+          </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="deal">
+    <div class="wrap">
+      <div class="deal">
+        <div>
+          <h2>تشتريه مرة واحدة، ويبقى لك.</h2>
+          <div class="price"><b>9 900 DA</b><span>ثمن البرنامج كاملًا</span></div>
+          <p class="price-note">مرة واحدة، لا اشتراك شهري ولا دفع كل سنة.</p>
+          <a class="btn btn-primary" href="#request" data-choose="paid" style="margin-top:24px">اطلب النسخة المدفوعة</a>
+        </div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b><bdi>9 900 DA</bdi> فقط</b><span>تدفعها مرة واحدة، بدون أي اشتراك.</span></div></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>التحديثات مجانية</b><span>كل نسخة جديدة تصلك دون دفع إضافي.</span></div></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>خدمة ما بعد البيع</b><span>نبقى معك بعد الشراء: تواصل معنا على واتساب.</span></div></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>التفعيل بدون إنترنت</b><span>بمفتاح خاص بحاسوب محلك.</span></div></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>14 يومًا تجربة بكل الميزات</b><span>تبدأ وحدها عند أول تشغيل، دون مفتاح.</span></div></li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><div><b>بياناتك لا تُقفَل أبدًا</b><span>بعد التجربة تبقى ظاهرة وقابلة للتصدير حتى تفعّل البرنامج.</span></div></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <div class="head">
+        <h2>كيف تبدأ</h2>
+        <p>من التثبيت إلى أول تيكي في نفس اليوم.</p>
+      </div>
+      <ol class="steps">
+        <li><h3>ثبّت البرنامج</h3><p>على حاسوب المحل بنظام Windows.</p></li>
+        <li><h3>اختر نوع محلك</h3><p>يجهّز البرنامج الأقسام المناسبة، ثم أدخل منتجاتك أو استوردها من Excel.</p></li>
+        <li><h3>بِع 14 يومًا مجانًا</h3><p>بكل الميزات، والكاسة والتيكي والتقارير تعمل من اليوم الأول.</p></li>
+        <li><h3>فعّل البرنامج</h3><p>أرسل لنا رمز حاسوبك، ونرسل لك مفتاح التفعيل.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <div class="head"><h2>أسئلة متكررة</h2></div>
+      <div class="faq">
+        <details><summary>كم ثمن البرنامج؟</summary><p><bdi>9 900 DA</bdi> تدفعها مرة واحدة، وتشمل كل التحديثات القادمة. لا اشتراك شهري ولا سنوي.</p></details>
+        <details><summary>هل يحتاج البرنامج إلى إنترنت؟</summary><p>لا. يعمل على حاسوب المحل بدون إنترنت، والتفعيل أيضًا بدون إنترنت.</p></details>
+        <details><summary>على أي جهاز يعمل؟</summary><p>على حاسوب بنظام Windows. ويمكن ربط أكثر من كاسة بنفس البيانات عبر شبكة المحل.</p></details>
+        <details><summary>هل هو بالعربية؟</summary><p>نعم، الواجهة كاملة بالعربية، وتتحول إلى الفرنسية أو الإنجليزية بضغطة.</p></details>
+        <details><summary>ماذا يحدث بعد 14 يومًا من التجربة؟</summary><p>يبقى البرنامج مفتوحًا للاطلاع: ترى كل بياناتك وتصدّرها، لكن لا تُسجَّل مبيعات جديدة حتى تفعّله بمفتاح.</p></details>
+        <details><summary>ماذا لو تعطّل الحاسوب؟</summary><p>البرنامج يأخذ نسخًا احتياطية من بياناتك، تسترجعها على الحاسوب الجديد. المفتاح مرتبط بالحاسوب، فتواصل معنا لتفعيل الجديد.</p></details>
+        <details><summary>هل أستطيع ترك ابني أو عامل في الكاسة؟</summary><p>نعم. أنشئ له حساب كاشير برمز سري: يبيع ويطبع التيكي، ولا يرى الأرباح ولا الإعدادات إلا إذا سمحت له.</p></details>
+        <details><summary>هل أرى المبيعات من هاتفي؟</summary><p>نعم، بتطبيق أندرويد أو من متصفح الهاتف، عندما يكون الهاتف على شبكة Wi-Fi المحل.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact">
+        <div>
+          <h2>جرّب Your POS في محلك</h2>
+          <p>راسلنا على واتساب، نرسل لك البرنامج ونجيب عن أسئلتك.</p>
+          <a class="btn btn-primary" href="https://wa.me/213776944683?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%AA%D8%AC%D8%B1%D8%A8%D8%A9%20%D8%A8%D8%B1%D9%86%D8%A7%D9%85%D8%AC%20Your%20POS" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>
+            راسلنا على واتساب
+          </a>
+        </div>
+        <div class="channels">
+          <div class="channel"><span class="label">واتساب</span><span class="value num" id="wa">0776 94 46 83</span><button class="copy" type="button" data-copy="0776944683">نسخ</button></div>
+          <div class="channel"><span class="label">البريد الإلكتروني</span><span class="value num" id="mail">your.pos.dz@gmail.com</span><button class="copy" type="button" data-copy="your.pos.dz@gmail.com">نسخ</button></div>
+          <div class="channel"><span class="label">فيسبوك</span><a class="value" href="https://fb.com/share/1aXa68R3fu" target="_blank" rel="noopener">صفحة Your POS</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span class="num">2026</span> Your POS</span>
+    <span>برنامج كاسة لمحلات الجزائر، لنظام Windows</span>
+  </div>
+</footer>
+</div>
+
+<script>
+  document.querySelectorAll(".copy").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var text = btn.getAttribute("data-copy");
+      var done = function () { btn.textContent = "تم النسخ"; setTimeout(function () { btn.textContent = "نسخ"; }, 1500); };
+      var select = function () {
+        var el = btn.parentNode.querySelector(".value");
+        var r = document.createRange(); r.selectNodeContents(el);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, select);
+      else select();
+    });
+  });
+</script>
+<script>
+  // Top of the page: the details first, then one of two buttons. "Paid" saves the order to the Google Sheet (a Google
+  // Apps Script web app, see google-sheet-script.gs) and offers WhatsApp with the details written in. "Trial" saves them
+  // too, then gives the download (or, while the installer has no address, asks for the link on WhatsApp).
+  (function () {
+    var SHEET_URL = "";
+    var DOWNLOAD_URL = "";
+    var PAGE = "v1-ticket";
+    var WA = "https://wa.me/213776944683?text=";
+    var WA_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>';
+    var DL_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3h2v9.6l3.3-3.3 1.4 1.4L12 16.4 6.3 10.7l1.4-1.4 3.3 3.3V3zM5 18h14v2H5z"/></svg>';
+    var form = document.getElementById("reqForm");
+    if (!form) return;
+    var kind = "trial";
+    var done = document.getElementById("reqDone");
+    var err = document.getElementById("rqError");
+    var hasDownload = /^https:\/\//.test(DOWNLOAD_URL);
+
+    // Enter in a field counts as the first button (the trial); a click says which one was meant.
+    var buttons = form.querySelectorAll('button[type="submit"]');
+    buttons.forEach(function (b) { b.addEventListener("click", function () { kind = b.getAttribute("data-kind"); }); });
+    var busy = function (on) {
+      buttons.forEach(function (b) { b.disabled = on; });
+      var b = document.getElementById(kind === "paid" ? "rqPaid" : "rqTrial");
+      if (on) { b.setAttribute("data-label", b.innerHTML); b.textContent = "جارٍ الإرسال…"; }
+      else if (b.getAttribute("data-label")) { b.innerHTML = b.getAttribute("data-label"); }
+    };
+
+    var val = function (id) { return document.getElementById(id).value.trim(); };
+    var mark = function (id, bad) { document.getElementById(id).setAttribute("aria-invalid", bad ? "true" : "false"); };
+    var phoneOk = function (p) { var d = p.replace(/[^0-9]/g, ""); if (d.indexOf("00213") === 0) d = d.slice(2); return /^0\d{8,9}$/.test(d) || /^213\d{8,9}$/.test(d); };
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (e.submitter && e.submitter.getAttribute("data-kind")) kind = e.submitter.getAttribute("data-kind");
+      var data = { kind: kind, name: val("rq-name"), shop: val("rq-shop"), phone: val("rq-phone"), wilaya: val("rq-wilaya"), type: val("rq-type"), website: val("rq-website"), page: PAGE };
+      var problems = [];
+      mark("rq-name", data.name.length < 2); if (data.name.length < 2) problems.push("اكتب اسمك");
+      mark("rq-shop", data.shop.length < 2); if (data.shop.length < 2) problems.push("اسم المحل");
+      mark("rq-phone", !phoneOk(data.phone)); if (!phoneOk(data.phone)) problems.push("رقم هاتف صحيح (مثل 0555 12 34 56)");
+      if (problems.length) { err.textContent = "ينقص: " + problems.join("، ") + "."; return; }
+      err.textContent = "";
+
+      var lines = [kind === "paid" ? "السلام عليكم، أريد شراء برنامج Your POS (9 900 DA)." : "السلام عليكم، أريد تجربة برنامج Your POS.", "الاسم: " + data.name, "المحل: " + data.shop];
+      if (data.type) lines.push("نوع المحل: " + data.type);
+      lines.push("الهاتف: " + data.phone);
+      if (data.wilaya) lines.push("الولاية: " + data.wilaya);
+      var waLink = WA + encodeURIComponent(lines.join("\n"));
+
+      var show = function (saved) {
+        var t, p, href, label, icon;
+        if (kind === "trial" && hasDownload) {
+          t = "رابط التحميل جاهز.";
+          p = "اضغط الزر لتحميل البرنامج، ثم ثبّته على حاسوب محلك. إذا ظهر تحذير Windows، اضغط «مزيد من المعلومات» ثم «تشغيل على أي حال».";
+          href = DOWNLOAD_URL; label = "تحميل النسخة التجريبية"; icon = DL_ICON;
+        } else if (kind === "trial") {
+          t = saved ? "تم تسجيل طلبك، شكرًا." : "آخر خطوة: أرسل طلبك على واتساب.";
+          p = saved ? "نرسل لك رابط التحميل على الرقم " + data.phone + ". ولرد أسرع، أرسل الطلب على واتساب أيضًا." : "اضغط الزر فيفتح واتساب برسالة جاهزة فيها معلوماتك، ثم اضغط إرسال، ونرسل لك رابط التحميل.";
+          href = waLink; label = "أرسل الطلب على واتساب"; icon = WA_ICON;
+        } else {
+          t = saved ? "تم تسجيل طلبك، شكرًا." : "آخر خطوة: أرسل طلبك على واتساب.";
+          p = saved ? "سنتصل بك على الرقم " + data.phone + " لإتمام الشراء. ولرد أسرع، أرسل الطلب على واتساب أيضًا." : "اضغط الزر فيفتح واتساب برسالة جاهزة فيها معلوماتك، ثم اضغط إرسال.";
+          href = waLink; label = "أرسل الطلب على واتساب"; icon = WA_ICON;
+        }
+        document.getElementById("rqDoneTitle").textContent = t;
+        document.getElementById("rqDoneText").textContent = p;
+        var main = document.getElementById("rqMain");
+        main.href = href;
+        document.getElementById("rqMainLabel").textContent = label;
+        document.getElementById("rqMainIcon").innerHTML = icon;
+        form.hidden = true; done.hidden = false;
+        main.focus();
+      };
+      if (data.website) { show(true); return; } // a robot filled the hidden field
+      if (!/^https:\/\/script\.google\.com\//.test(SHEET_URL)) { show(false); return; }
+      busy(true);
+      var timeout = new Promise(function (_, reject) { setTimeout(function () { reject(new Error("timeout")); }, 8000); });
+      Promise.race([fetch(SHEET_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) }), timeout])
+        .then(function () { show(true); }, function () { show(false); })
+        .then(function () { busy(false); });
+    });
+    document.getElementById("rqAgain").addEventListener("click", function () { form.reset(); done.hidden = true; form.hidden = false; document.getElementById("rq-name").focus(); });
+    document.querySelectorAll("[data-choose]").forEach(function (a) { a.addEventListener("click", function () { setTimeout(function () { document.getElementById("rq-name").focus({ preventScroll: true }); }, 400); }); });
+  })();
+</script>
+
+
+</body>
+</html>
